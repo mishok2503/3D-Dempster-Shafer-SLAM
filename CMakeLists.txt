@@ -5,4 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(DSSLAM main.cpp)
 
-target_include_directories(DSSSLAM PRIVATE include)
+target_include_directories(DSSLAM PRIVATE include)
+target_include_directories(DSSLAM PRIVATE .)
+
+

@@ -4,22 +4,22 @@
 
 class TDSCell {
 private:
-    static constexpr float DEFAULT_CONFLICT = 0.1;
+    static constexpr float DEFAULT_CONFLICT = 0.1; // TODO: somewhere magic constant
 
     std::array<float, 3> data;
 
 public:
-    TDSCell(float p) {
-        data[0] = 1 - DEFAULT_CONFLICT / 2 - p;
-        data[1] = p - DEFAULT_CONFLICT / 2;
-        data[2] = DEFAULT_CONFLICT;
-    }
+    explicit TDSCell(float p = 0.5) : data({
+        1 - DEFAULT_CONFLICT / 2 - p,
+        p - DEFAULT_CONFLICT / 2,
+        DEFAULT_CONFLICT
+    }) {}
 
-    float getOccupancy() const {
+    [[nodiscard]] float GetOccupancy() const {
         return data[1] + data[2] / 2;
     }
 
-    void update(float p) {
+    void Update(float p) {
         TDSCell t{p};
         data[0] = data[0] * t.data[0] + data[0] * t.data[2] + data[2] * t.data[0];
         data[1] = data[1] * t.data[1] + data[1] * t.data[2] + data[2] * t.data[1];
