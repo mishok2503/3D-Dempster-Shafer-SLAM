@@ -16,17 +16,24 @@ private:
     std::vector<TPlane> Data;
 
     float CellSize;
-    unsigned HoleSize;
+    int HoleSize;
 
-    float GetPointScore(const mutil::Vector3 &point) const {
-        mutil::IntVector3 i(point / CellSize);
-        return Data[i.x][i.y][i.z].GetOccupancy();
+    [[nodiscard]] float GetPointScore(const mutil::Vector3 &point) const {
+        auto p = WorldToMap(point);
+        if (p.x >= SizeX || p.y >= SizeY || p.z >= SizeZ) {
+            return -1e9;
+        }
+        return GetCellOccupancy(p);
     }
 
     void BeamUpdate(mutil::IntVector3 begin, mutil::IntVector3 end) {
         using std::max, std::abs;
-        Bresenham3D(begin, end, HoleSize, [this](mutil::IntVector3 i) {
-            std::cout << i.x << ' ' << i.y << ' ' << i.z << '\n';
+        if (end.x >= SizeX || end.y >= SizeY || end.z >= SizeZ) {
+            std::cerr << "Out of bounds: " <<  end.x << ' ' << end.y << ' ' << end.z << '\n';
+            int s;
+            std::cin >> s;
+        }
+        Bresenham3D(begin, end, HoleSize + 1, [this](mutil::IntVector3 i) {
             Data[i.x][i.y][i.z].Update(0);
         });
         for (int x = -HoleSize; x <= HoleSize; ++x) {
@@ -45,10 +52,13 @@ public:
     explicit TMap(float cellSize, unsigned holeSize = 1)
             : Data(SizeX, TPlane(SizeY, std::vector<TCell>(SizeZ))), CellSize(cellSize), HoleSize(holeSize) {}
 
-    float GetScore(const TRobot &robot, const std::vector<mutil::Vector3> &data) const {
+    [[nodiscard]] float GetScore(const TRobot &robot, const std::vector<mutil::Vector3> &data) const {
         float result = 0;
         for (const auto &point: data) {
             result += GetPointScore(robot.LidarToWorld(point));
+            if (result < 0) { // TODO: check performance
+                break;
+            }
         }
         return result;
     }
@@ -59,7 +69,38 @@ public:
 
     void Update(const TRobot &robot, const std::vector<mutil::Vector3> &data) {
         for (const auto &point: data) {
-            BeamUpdate(mutil::IntVector3{robot.GetPosition()}, mutil::IntVector3{point});
+            BeamUpdate(
+                    WorldToMap(robot.GetPosition()),
+                    WorldToMap(robot.LidarToWorld(point))
+            );
+        }
+    }
+
+    [[nodiscard]] float GetCellOccupancy(unsigned x, unsigned y, unsigned z) const {
+        return Data[x][y][z].GetOccupancy();
+    }
+
+    [[nodiscard]] float GetCellOccupancy(const mutil::IntVector3 i) const {
+        return GetCellOccupancy(i.x, i.y, i.z);
+    }
+
+    [[nodiscard]] mutil::IntVector3 WorldToMap(const mutil::Vector3 &v) const {
+        return mutil::IntVector3{v / CellSize};
+    }
+
+    [[nodiscard]] constexpr std::tuple<unsigned, unsigned, unsigned> GetSize() const {
+        return {SizeX, SizeY, SizeZ};
+    }
+
+    void Draw(std::ostream& os) {
+        for (unsigned i=0; i < SizeX; ++i) {
+            for (unsigned j=0; j < SizeY; ++j) {
+                for (unsigned k=0; k < SizeZ; ++k) {
+                    if (GetCellOccupancy(i, j, k) > 0.5) {
+                        os << CellSize * i << ' ' << CellSize *  j << ' ' << CellSize * k << '\n';
+                    }
+                }
+            }
         }
     }
 };

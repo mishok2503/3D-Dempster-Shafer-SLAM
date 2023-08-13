@@ -36,28 +36,39 @@ public:
         float score = map.GetScore(bestRobot, data);
 
         for (int i = 0; i < samples; ++i) {
-            mutil::Vector3 deltaPosition = {PositionDistribution(RandomGenerator),
-                                            PositionDistribution(RandomGenerator),
-                                            PositionDistribution(RandomGenerator)};
-            mutil::Vector3 deltaOrientation = {OrientationDistribution(RandomGenerator),
-                                               OrientationDistribution(RandomGenerator),
-                                               OrientationDistribution(RandomGenerator)};
-            TRobot sample{Position + deltaPosition,Orientation + deltaOrientation};
+            mutil::Vector3 deltaPosition = {
+                    PositionDistribution(RandomGenerator),
+                    PositionDistribution(RandomGenerator),
+                    0 //PositionDistribution(RandomGenerator)
+            };
+            mutil::Vector3 deltaOrientation = {
+                    0, //OrientationDistribution(RandomGenerator),
+                    0, //OrientationDistribution(RandomGenerator),
+                    OrientationDistribution(RandomGenerator)
+            };
+            TRobot sample{Position + deltaPosition, Orientation + deltaOrientation};
             float s = map.GetScore(sample, data);
             if (s > score) {
                 score = s;
                 bestRobot = sample;
             }
         }
-        *this = bestRobot;
+
+        *this =
+                bestRobot;
     }
 
-    const mutil::Vector3 &GetPosition() const {
+    const mutil::Vector3
+
+    &
+
+    GetPosition() const {
         return Position;
     }
 
     const mutil::Vector3 &GetOrientation() const {
         return Orientation;
     }
+
 };
 
