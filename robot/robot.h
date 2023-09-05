@@ -5,6 +5,7 @@
 
 #include "mutil/mutil.h"
 #include "util/rotation.h"
+#include "types/lidar_point.h"
 
 class TRobot {
 private:
@@ -27,8 +28,8 @@ public:
     }
 
     template<class TMap>
-    void ApplyOdometry(const TMap &map, const std::vector<mutil::Vector3> &data, unsigned samples,
-                       float stddev_position, float stddev_orientation) {
+    void ErrorCorrection(const TMap &map, const std::vector<TLidarPoint> &data, unsigned samples,
+                         float stddev_position, float stddev_orientation) {
         std::normal_distribution<float> PositionDistribution{0, stddev_position};
         std::normal_distribution<float> OrientationDistribution{0, stddev_orientation};
 
@@ -42,8 +43,8 @@ public:
                     0 //PositionDistribution(RandomGenerator)
             };
             mutil::Vector3 deltaOrientation = {
-                    0, //OrientationDistribution(RandomGenerator),
-                    0, //OrientationDistribution(RandomGenerator),
+                    0, // OrientationDistribution(RandomGenerator),
+                    0, // OrientationDistribution(RandomGenerator),
                     OrientationDistribution(RandomGenerator)
             };
             TRobot sample{Position + deltaPosition, Orientation + deltaOrientation};
@@ -54,15 +55,10 @@ public:
             }
         }
 
-        *this =
-                bestRobot;
+        *this = bestRobot;
     }
 
-    const mutil::Vector3
-
-    &
-
-    GetPosition() const {
+    const mutil::Vector3& GetPosition() const {
         return Position;
     }
 
@@ -70,5 +66,12 @@ public:
         return Orientation;
     }
 
+    void ApplyOdometry(const mutil::Vector3& deltaPos, const mutil::Vector3& deltaOrientation) {
+        if (deltaOrientation != mutil::Vector3{}) {
+            Orientation += deltaOrientation;
+            RotationMatrix = RotationMatrixFromEuler(Orientation);
+        }
+        Position += RotationMatrix * deltaPos;
+    }
 };
 
