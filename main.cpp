@@ -20,15 +20,16 @@ namespace {
 
 int main() {
 
-//    freopen("/Users/mishok/PycharmProjects/BagConverter/tracks/gt.txt", "w", stdout);
-
     unsigned mapBuildSteps = 1;
     constexpr unsigned sizeX = 2000, sizeY = 2000, sizeZ = 220;
     constexpr float cellSize = 0.1;
+    constexpr unsigned samplesCount = 300;
 
+    // change cell type here
     TMap<TDSCell, sizeX, sizeY, sizeZ> map(cellSize, 1);
     TRobot robot(map.GetCenter());
 
+    // result.json - input data
     nlohmann::json data = nlohmann::json::parse(std::ifstream("result.json"))["data"];
 
     size_t reserveSize = data["measurements"][0]["lidar_data"].size();
@@ -38,16 +39,8 @@ int main() {
 
     int step = 0;
     for (const auto& measurement : data["measurements"]) {
+        std::cerr << ++step << '\n';
 
-        std::cout << ++step << '\n';
-//        if (step > 500) {
-//            break;
-//        }
-//        if (step % 30 == 0) {
-//            break;
-//            std::ofstream mapFile("/Users/mishok/PycharmProjects/BagConverter/pc/res.txt");
-//            map.Draw(mapFile);
-//        }
         std::vector<TLidarPoint> lidarData;
         lidarData.reserve(reserveSize);
         for (const auto& point : measurement["lidar_data"]) {
@@ -67,7 +60,7 @@ int main() {
             --mapBuildSteps;
         } else {
             robot.ApplyOdometry(odomPos, odomOrient);
-//            robot.ErrorCorrection(map, lidarData, 300, 0.1, 0.05);
+            robot.ErrorCorrection(map, lidarData, samplesCount, 0.1, 0.05);
         }
 
         const auto& odom = measurement["odometry"];
@@ -75,11 +68,11 @@ int main() {
         odomOrient = JsonToVector(odom["euler_angles"]);
 
         std::cout << robot.GetPosition() << ' ' << robot.GetOrientation() << '\n';
-        map.Update(robot, lidarData);
+        map.Update(robot, lidarData); // update map with new lidar scan
     }
 
-    std::ofstream mapFile("/Users/mishok/PycharmProjects/BagConverter/pc/res.txt");
-    map.Draw(mapFile);
+    std::ofstream mapFile("result.txt");
+    map.Draw(mapFile); // write occupied cells coordinates
 
     return 0;
 }

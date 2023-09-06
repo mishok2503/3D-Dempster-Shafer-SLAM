@@ -17,7 +17,7 @@ private:
     std::vector<TPlane> Data;
 
     float CellSize;
-    int HoleSize;
+    unsigned HoleSize;
 
     [[nodiscard]] float GetPointScore(const mutil::Vector3 &point, const float quality) const {
         auto p = WorldToMap(point);
@@ -31,8 +31,7 @@ private:
         using std::max, std::abs;
         if (end.x >= SizeX || end.y >= SizeY || end.z >= SizeZ) {
             std::cerr << "Out of bounds: " <<  end.x << ' ' << end.y << ' ' << end.z << '\n';
-            int s;
-            std::cin >> s;
+            return;
         }
         Bresenham3D(begin, end, HoleSize + 1, [this, quality](mutil::IntVector3 i) {
             Data[i.x][i.y][i.z].Update(0, quality);
@@ -58,7 +57,7 @@ public:
         float result = 0;
         for (const auto &point: data) {
             result += GetPointScore(robot.LidarToWorld(point.coordinates), point.quality);
-            if (result < 0) { // TODO: check performance
+            if (result < 0) {
                 break;
             }
         }

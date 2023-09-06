@@ -58,11 +58,11 @@ public:
         *this = bestRobot;
     }
 
-    const mutil::Vector3& GetPosition() const {
+    [[nodiscard]] const mutil::Vector3& GetPosition() const {
         return Position;
     }
 
-    const mutil::Vector3 &GetOrientation() const {
+    [[nodiscard]] const mutil::Vector3 &GetOrientation() const {
         return Orientation;
     }
 
