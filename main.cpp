@@ -18,19 +18,35 @@ namespace {
     }
 }
 
-int main() {
+int main(int argc, char* argv[]) {
 
     unsigned mapBuildSteps = 1;
-    constexpr unsigned sizeX = 2000, sizeY = 2000, sizeZ = 220;
+    constexpr unsigned sizeX = 1000, sizeY = 1000, sizeZ = 220;
     constexpr float cellSize = 0.1;
     constexpr unsigned samplesCount = 300;
+    using cellType = TDSCell; // or TCountingCell
+    constexpr float cellDrawThreshold = 0.7; // in [0; 1]
 
-    // change cell type here
-    TMap<TDSCell, sizeX, sizeY, sizeZ> map(cellSize, 1);
+    std::string outputFileName = "map.txt";
+    if (argc >= 2) {
+        outputFileName = argv[2];
+    }
+
+    if (argc < 2) {
+        std::cerr << "Error: provide input file\n";
+        return 1;
+    }
+
+    std::ifstream inputFile(argv[1]);
+    if (!inputFile.is_open()) {
+        std::cerr << "Error: Can't open file \"" << argv[1] << "\"\n";
+        return 2;
+    }
+    nlohmann::json data = nlohmann::json::parse(inputFile)["data"];
+    inputFile.close();
+
+    TMap<cellType, sizeX, sizeY, sizeZ> map(cellSize, 1);
     TRobot robot(map.GetCenter());
-
-    // result.json - input data
-    nlohmann::json data = nlohmann::json::parse(std::ifstream("result.json"))["data"];
 
     size_t reserveSize = data["measurements"][0]["lidar_data"].size();
 
@@ -71,8 +87,8 @@ int main() {
         map.Update(robot, lidarData); // update map with new lidar scan
     }
 
-    std::ofstream mapFile("result.txt");
-    map.Draw(mapFile); // write occupied cells coordinates
+    std::ofstream mapFile(outputFileName);
+    map.Draw(mapFile, cellDrawThreshold); // write occupied cells coordinates
 
     return 0;
 }

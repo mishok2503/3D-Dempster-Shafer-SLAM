@@ -4,30 +4,41 @@ This repository contains an C++ implementation of the 3D Dempster-Shafer SLAM al
 
 ## Installation
 
-1. Clone repository
+#### Clone repository
 
-    ```bash
-   git clone https://github.com/mishok2503/3D-Dempster-Shafer-SLAM.git
-   cd 3D-Dempster-Shafer-SLAM 
-   ```
-
-2. Install Open3d
-
-    ```bash
-    pip install open3d
-    ```
-
-
-## Run
-
-```bash
-    python main.py <file-with-data.json>
+ ```bash
+git clone https://github.com/mishok2503/3D-Dempster-Shafer-SLAM.git
+cd 3D-Dempster-Shafer-SLAM
 ```
-[Input file format](https://github.com/mishok2503/slam-3d-datasets-generator#output-format)
 
+#### Build
 
-## Test
+ ```bash
+mkdir -p build && cd build
+cmake .
+make
+cp ../draw.py .
+```
+
+#### Prepare input data
+
+You can generate input data using this TODO generator.
+
+#### Run
 
 ```bash
-    python main.py tests/data/result.json
+./DSSLAM <input-file> [map-file] [> robot-positions-file]
+```
+Default `map-file` name is `"map.txt"`.
+
+#### Draw result map
+
+Firstly install `open3d` library.
+```bash
+pip install open3d
+```
+
+Then run script.
+```bash
+python draw.py <map-file>
 ```

@@ -94,11 +94,11 @@ public:
         return {SizeX, SizeY, SizeZ};
     }
 
-    void Draw(std::ostream& os) {
+    void Draw(std::ostream& os, float threshold) {
         for (unsigned i=0; i < SizeX; ++i) {
             for (unsigned j=0; j < SizeY; ++j) {
                 for (unsigned k=0; k < SizeZ; ++k) {
-                    if (Data[i][j][k].GetOccupancy() > 0.7) {
+                    if (Data[i][j][k].GetOccupancy() >= threshold) {
                         os << CellSize * i << ' ' << CellSize *  j << ' ' << CellSize * k << '\n';
                     }
                 }
