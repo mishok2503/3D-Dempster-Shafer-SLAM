@@ -17,7 +17,7 @@ private:
     std::vector<TPlane> Data;
 
     float CellSize;
-    unsigned HoleSize;
+    int HoleSize;
 
     [[nodiscard]] float GetPointScore(const mutil::Vector3 &point, const float quality) const {
         auto p = WorldToMap(point);

@@ -15,7 +15,7 @@ cd 3D-Dempster-Shafer-SLAM
 
  ```bash
 mkdir -p build && cd build
-cmake .
+cmake ..
 make
 cp ../draw.py .
 ```

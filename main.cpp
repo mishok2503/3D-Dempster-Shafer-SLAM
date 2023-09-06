@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
     constexpr float cellDrawThreshold = 0.7; // in [0; 1]
 
     std::string outputFileName = "map.txt";
-    if (argc >= 2) {
+    if (argc >= 3) {
         outputFileName = argv[2];
     }
 
