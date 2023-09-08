@@ -2,7 +2,7 @@
 
 This repository contains an C++ implementation of the 3D Dempster-Shafer SLAM algorithm. It extends the [vinySLAM](https://github.com/OSLL/slam-constructor) approach to three-dimensional space.
 
-## Installation
+## Usage
 
 #### Clone repository
 
@@ -27,7 +27,7 @@ You can generate input data using this TODO generator.
 #### Run
 
 ```bash
-./DSSLAM <input-file> [map-file] [> robot-positions-file]
+./DSSLAM <input-file> [map-file] [> robot-trajectory-file]
 ```
 Default `map-file` name is `"map.txt"`.
 
@@ -42,3 +42,5 @@ Then run script.
 ```bash
 python draw.py <map-file>
 ```
+
+#### Draw robot trajectory

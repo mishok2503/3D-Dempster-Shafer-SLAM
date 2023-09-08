@@ -3,8 +3,8 @@
 
 #include "mutil/mutil.h"
 #include "nlohmann/json.hpp"
-#include "cell/ds.h"
-#include "cell/counting.h"
+#include "cell/DS.h"
+#include "cell/Counting.h"
 #include "map/map.h"
 #include "types/lidar_point.h"
 
