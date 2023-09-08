@@ -3,9 +3,9 @@
 #include <vector>
 
 #include "mutil/mutil.h"
-#include "robot/robot.h"
-#include "util/bresenham.h"
-#include "types/lidar_point.h"
+#include "Robot/Robot.h"
+#include "Util/Bresenham.h"
+#include "Types/LidarPoint.h"
 
 #include <iostream>
 

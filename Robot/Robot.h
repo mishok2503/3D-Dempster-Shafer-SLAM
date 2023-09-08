@@ -4,8 +4,8 @@
 #include <random>
 
 #include "mutil/mutil.h"
-#include "util/rotation.h"
-#include "types/lidar_point.h"
+#include "Util/Rotation.h"
+#include "Types/LidarPoint.h"
 
 class TRobot {
 private:

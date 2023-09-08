@@ -3,10 +3,10 @@
 
 #include "mutil/mutil.h"
 #include "nlohmann/json.hpp"
-#include "cell/DS.h"
-#include "cell/Counting.h"
-#include "map/map.h"
-#include "types/lidar_point.h"
+#include "Cell/DS.h"
+#include "Cell/Counting.h"
+#include "Map/Map.h"
+#include "Types/LidarPoint.h"
 
 namespace {
     std::ostream &operator<<(std::ostream &os, const mutil::Vector3 &v) {
