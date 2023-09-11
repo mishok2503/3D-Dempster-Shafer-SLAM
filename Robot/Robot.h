@@ -7,6 +7,7 @@
 #include "Util/Rotation.h"
 #include "Types/LidarPoint.h"
 
+template<bool IsMove2D>
 class TRobot {
 private:
 
@@ -40,11 +41,11 @@ public:
             mutil::Vector3 deltaPosition = {
                     PositionDistribution(RandomGenerator),
                     PositionDistribution(RandomGenerator),
-                    0 //PositionDistribution(RandomGenerator)
+                    IsMove2D ? 0 : PositionDistribution(RandomGenerator)
             };
             mutil::Vector3 deltaOrientation = {
-                    0, // OrientationDistribution(RandomGenerator),
-                    0, // OrientationDistribution(RandomGenerator),
+                    IsMove2D ? 0 : OrientationDistribution(RandomGenerator),
+                    IsMove2D ? 0 : OrientationDistribution(RandomGenerator),
                     OrientationDistribution(RandomGenerator)
             };
             TRobot sample{Position + deltaPosition, Orientation + deltaOrientation};

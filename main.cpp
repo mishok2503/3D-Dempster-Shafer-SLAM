@@ -26,6 +26,8 @@ int main(int argc, char* argv[]) {
     constexpr unsigned samplesCount = 300;
     using cellType = TDSCell; // or TCountingCell
     constexpr float cellDrawThreshold = 0.7; // in [0; 1]
+    constexpr int holeSize = 1;
+    constexpr bool isRobotMove2D = true;
 
     std::string outputFileName = "map.txt";
     if (argc >= 3) {
@@ -45,8 +47,8 @@ int main(int argc, char* argv[]) {
     nlohmann::json data = nlohmann::json::parse(inputFile)["data"];
     inputFile.close();
 
-    TMap<cellType, sizeX, sizeY, sizeZ> map(cellSize, 1);
-    TRobot robot(map.GetCenter());
+    TMap<cellType, sizeX, sizeY, sizeZ> map(cellSize, holeSize);
+    TRobot<isRobotMove2D> robot(map.GetCenter());
 
     size_t reserveSize = data["measurements"][0]["lidar_data"].size();
 
@@ -72,10 +74,10 @@ int main(int argc, char* argv[]) {
             }
         }
 
+        robot.ApplyOdometry(odomPos, odomOrient);
         if (mapBuildSteps) {
             --mapBuildSteps;
         } else {
-            robot.ApplyOdometry(odomPos, odomOrient);
             robot.ErrorCorrection(map, lidarData, samplesCount, 0.1, 0.05);
         }
 
