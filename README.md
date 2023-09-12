@@ -99,3 +99,5 @@ Then a score is calculated for each of them, which indicates how well the new li
 From the point of the new lidar scan, select those that indicate occupancy (those not farther than the maximum measurement).
 Then for each of them we take the extent to which the cell in which this point falls is occupied and multiply it by the quality of the point.
 And then summarize all the values. After that we select the robot with the maximum score and consider that this is the actual position of the robot and perform all further steps in relation to it.
+
+If you want to get the trajectory and map without corrections (e.g. to **get ground_truth trajectory**) set `isGroundTruth = true`.

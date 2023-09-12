@@ -28,6 +28,7 @@ int main(int argc, char* argv[]) {
     constexpr float cellDrawThreshold = 0.7; // in [0; 1]
     constexpr int holeSize = 1;
     constexpr bool isRobotMove2D = true;
+    constexpr bool isGroundTruth = false;
 
     std::string outputFileName = "map.txt";
     if (argc >= 3) {
@@ -77,7 +78,7 @@ int main(int argc, char* argv[]) {
         robot.ApplyOdometry(odomPos, odomOrient);
         if (mapBuildSteps) {
             --mapBuildSteps;
-        } else {
+        } else if (!isGroundTruth) {
             robot.ErrorCorrection(map, lidarData, samplesCount, 0.1, 0.05, isRobotMove2D);
         }
 
