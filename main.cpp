@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
     inputFile.close();
 
     TMap<cellType, sizeX, sizeY, sizeZ> map(cellSize, holeSize);
-    TRobot<isRobotMove2D> robot(map.GetCenter());
+    TRobot robot(map.GetCenter());
 
     size_t reserveSize = data["measurements"][0]["lidar_data"].size();
 
@@ -78,7 +78,7 @@ int main(int argc, char* argv[]) {
         if (mapBuildSteps) {
             --mapBuildSteps;
         } else {
-            robot.ErrorCorrection(map, lidarData, samplesCount, 0.1, 0.05);
+            robot.ErrorCorrection(map, lidarData, samplesCount, 0.1, 0.05, isRobotMove2D);
         }
 
         const auto& odom = measurement["odometry"];

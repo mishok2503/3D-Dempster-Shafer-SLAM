@@ -7,7 +7,6 @@
 #include "Util/Rotation.h"
 #include "Types/LidarPoint.h"
 
-template<bool IsMove2D>
 class TRobot {
 private:
 
@@ -30,7 +29,7 @@ public:
 
     template<class TMap>
     void ErrorCorrection(const TMap &map, const std::vector<TLidarPoint> &data, unsigned samples,
-                         float stddev_position, float stddev_orientation) {
+                         float stddev_position, float stddev_orientation, bool isMove2D = false) {
         std::normal_distribution<float> PositionDistribution{0, stddev_position};
         std::normal_distribution<float> OrientationDistribution{0, stddev_orientation};
 
@@ -41,11 +40,11 @@ public:
             mutil::Vector3 deltaPosition = {
                     PositionDistribution(RandomGenerator),
                     PositionDistribution(RandomGenerator),
-                    IsMove2D ? 0 : PositionDistribution(RandomGenerator)
+                    isMove2D ? 0 : PositionDistribution(RandomGenerator)
             };
             mutil::Vector3 deltaOrientation = {
-                    IsMove2D ? 0 : OrientationDistribution(RandomGenerator),
-                    IsMove2D ? 0 : OrientationDistribution(RandomGenerator),
+                    isMove2D ? 0 : OrientationDistribution(RandomGenerator),
+                    isMove2D ? 0 : OrientationDistribution(RandomGenerator),
                     OrientationDistribution(RandomGenerator)
             };
             TRobot sample{Position + deltaPosition, Orientation + deltaOrientation};
