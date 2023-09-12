@@ -45,6 +45,8 @@ python draw.py <map-file>
 
 #### Draw robot trajectory
 
+Trajectory drawing and calculation of Trajectory Root Mean Squared Error can be found in the [trajectory.ipynb](trajectory.ipynb) file.
+
 ## How it works
 
 ### Map updating
