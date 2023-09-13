@@ -13,17 +13,19 @@ namespace {
         return os << v.x << ' ' << v.y << ' ' << v.z;
     }
 
-    mutil::Vector3 JsonToVector(const auto& json) {
+    mutil::Vector3 JsonToVector(const auto &json) {
         return {json[0], json[1], json[2]};
     }
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
 
     unsigned mapBuildSteps = 1;
     constexpr unsigned sizeX = 1000, sizeY = 1000, sizeZ = 220;
     constexpr float cellSize = 0.1;
     constexpr unsigned samplesCount = 300;
+    constexpr float stddev_pos = 0.1;
+    constexpr float stddev_rot = 0.05;
     using cellType = TDSCell; // or TCountingCell
     constexpr float cellDrawThreshold = 0.7; // in [0; 1]
     constexpr int holeSize = 1;
@@ -57,17 +59,17 @@ int main(int argc, char* argv[]) {
     mutil::Vector3 odomOrient{};
 
     int step = 0;
-    for (const auto& measurement : data["measurements"]) {
+    for (const auto &measurement: data["measurements"]) {
         std::cerr << ++step << '\n';
 
         std::vector<TLidarPoint> lidarData;
         lidarData.reserve(reserveSize);
-        for (const auto& point : measurement["lidar_data"]) {
+        for (const auto &point: measurement["lidar_data"]) {
             if (point["type"] == "point") {
                 TLidarPoint lidarPoint{
-                    JsonToVector(point["coordinates"]),
-                    point["quality"],
-                    TLidarPoint::POINT
+                        JsonToVector(point["coordinates"]),
+                        point["quality"],
+                        TLidarPoint::POINT
                 };
                 if (lidarPoint.coordinates.length() < 50) { // TODO: magic number
                     lidarData.push_back(std::move(lidarPoint));
@@ -79,10 +81,14 @@ int main(int argc, char* argv[]) {
         if (mapBuildSteps) {
             --mapBuildSteps;
         } else if (!isGroundTruth) {
-            robot.ErrorCorrection(map, lidarData, samplesCount, 0.1, 0.05, isRobotMove2D);
+            robot.ErrorCorrection(
+                    map, lidarData,
+                    samplesCount, stddev_pos,stddev_rot,
+                    isRobotMove2D
+            );
         }
 
-        const auto& odom = measurement["odometry"];
+        const auto &odom = measurement["odometry"];
         odomPos = JsonToVector(odom["position"]);
         odomOrient = JsonToVector(odom["euler_angles"]);
 
