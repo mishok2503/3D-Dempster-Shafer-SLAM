@@ -65,13 +65,14 @@ int main(int argc, char *argv[]) {
         std::vector<TLidarPoint> lidarData;
         lidarData.reserve(reserveSize);
         for (const auto &point: measurement["lidar_data"]) {
-            if (point["type"] == "point") {
+            if (point["type"] == "point") { // TODO: use other types
                 TLidarPoint lidarPoint{
                         JsonToVector(point["coordinates"]),
                         point["quality"],
                         TLidarPoint::POINT
                 };
-                if (lidarPoint.coordinates.length() < 50) { // TODO: magic number
+                float r = lidarPoint.coordinates.length();
+                if (1 < r && r < 50) { // TODO: magic numbers
                     lidarData.push_back(std::move(lidarPoint));
                 }
             }
