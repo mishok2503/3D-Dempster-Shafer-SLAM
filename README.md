@@ -23,7 +23,7 @@ cp ../draw.py .
 #### Prepare input data
 
 You can generate synthetic data using [this generator](https://github.com/mishok2503/slam-3d-datasets-generator)
-or you can convert some ".bag" files to the required format using [trajectory.ipynb](trajectory.ipynb).
+or you can convert some ".bag" files to the required format using [bag.ipynb](bag.ipynb).
 
 #### Run
 
